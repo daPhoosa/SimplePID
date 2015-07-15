@@ -6,36 +6,32 @@
  */
 
 
-#include "SimplePID.h"
+#ifndef SimplePID_h
+#define SimplePID_h
 
+#include <arduino.h>
 
-SimplePID::SimplePID(float _P, float _I, float _D, float _iLimit, float _dt)
+class SimplePID
 {
-	P = _P;
-	I = _I;
-	D = _D * _dt;
+	public:
 	
-	iLimit = abs(_iLimit);
+		SimplePID(float _P, float _I, float _D, float _iLimit, float _dt);
+		
+		void in(const float data, const float target);
+		
+		float out();
+		
+		void iReset();
+		
+		
+	private:
 	
-	errorPrevious = 0.0f;
-	iBucket = 0.0f;
-}
+		float P, I, D, iLimit;
+		
+		float errorPrevious, iBucket;
+		
+		float output;
 
+};
 
-void SimplePID::in(const float data, const float target)
-{
-	float error = target - data;
-	
-	iBucket += error;
-	constrain(iBucket, -iLimit, iLimit);
-	
-	output = P * error + I * iBucket + D * (error - errorPrevious);
-	
-	errorPrevious = error;
-}
-
-
-float SimplePID::out()
-{
-	return output;
-}
+#endif
